@@ -1,0 +1,9 @@
+.DS_Store
+composer.phar
+.idea
+/vendor
+Thumbs.db
+.buildpath
+.project
+.settings
+nbproject

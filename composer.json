@@ -1,0 +1,23 @@
+{
+    "name": "jamieynonan/core-plugin-wp",
+    "description": "Core to create projects with base-plugin-wp",
+    "keywords": ["wordpress","base-plugin-wp","wp"],
+    "type": "library",
+    "homepage": "https://github.com/JamieYnonan/core-plugin-wp",
+    "require": {
+        "php": ">= 5.4",
+        "jamieynonan/helpers": ">=1.1"
+    },
+    "license": "GPL-2.0",
+    "authors": [
+        {
+            "name": "Jamie Ynonan",
+            "email": "jamiea31@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "CorePluginWp\\": "core/"
+        }
+    }
+}
