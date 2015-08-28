@@ -7,7 +7,7 @@ class View
 	{
 		ob_start();
 		extract($data);
-		include __DIR__ . '/../views/'. $file .'.php';
+		include __DIR__ . '/../../../../views/'. $file .'.php';
 		return ob_get_clean();
 	}
 
