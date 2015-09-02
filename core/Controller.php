@@ -20,7 +20,7 @@ abstract class Controller
 	}
 
 	/**
-	 * @param key string|int argument, string = key|int = position
+	 * @param key string argument
 	 * @return false if not exists the key in $_POST
 	 * @return value of key or all $_POST sanitized
 	 */
@@ -28,7 +28,7 @@ abstract class Controller
 	{
 		if($key === null) {
 			$post = filter_var_array($_POST, FILTER_SANITIZE_STRING);
-		} elseif (is_string($key && isset($_POST[$key])) {
+		} elseif (is_string($key) && isset($_POST[$key])) {
 			$value = $_POST[$key];
 			$post = is_array($value)
 				? filter_var_array($value, FILTER_SANITIZE_STRING)
