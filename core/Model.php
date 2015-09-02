@@ -142,7 +142,7 @@ abstract class Model implements ModelInterface
 	 */
 	public static function find($value = null, $pk = 'id')
 	{
-		if (empty($id) || empty($value)) {
+		if (empty($pk) || empty($value)) {
 			return false;
 		}
 
