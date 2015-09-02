@@ -6,7 +6,7 @@
     "homepage": "https://github.com/JamieYnonan/core-plugin-wp",
     "require": {
         "php": ">= 5.4",
-        "jamieynonan/helpers": "@dev"
+        "jamieynonan/helpers": "0.*"
     },
     "license": "GPL-2.0",
     "authors": [
