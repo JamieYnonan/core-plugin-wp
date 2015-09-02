@@ -12,6 +12,9 @@ abstract class Model implements ModelInterface
 		return General::camel2id(get_called_class());
 	}
 
+	/**
+	 * @param data an array argument, key = attribute of table, value = value.
+	 */
 	public static function getDataFormat(array $data)
 	{
 		global $wpdb;
@@ -30,6 +33,10 @@ abstract class Model implements ModelInterface
 		return $return;
 	}
 
+	/**
+	 * @param data an array argument, key = attribute of table, value = value.
+	 * @param getDataFormat boolean.
+	 */
 	public function save(array $data, $getDataFormat = true)
 	{
 		global $wpdb;
@@ -84,6 +91,10 @@ abstract class Model implements ModelInterface
 		return $model;
 	}
 
+	/**
+	 * @param model an instance of Model.
+	 * @param row an array argument.
+	 */
 	private static function loadRowOnModel(Model &$model, array $row)
 	{
 		foreach ($row as $attr => $value) {
@@ -101,7 +112,11 @@ abstract class Model implements ModelInterface
 		);
 	}
 
-	public static function where(array $where, $outputObject = true)
+	/**
+	 * @param where an array argument, key = attribute of table, value = value.
+	 * @param output a string argument (object|array), array = ARRAY_A.
+	 */
+	public static function where(array $where, $outputType  = 'object')
 	{
 		global $wpdb;
 
@@ -114,14 +129,18 @@ abstract class Model implements ModelInterface
 			$parameters[] = $parameter;
 		}
 
-		$output = ($outputObject === true) ? OBJECT : ARRAY_A;
+		$output = ($outputType  == 'object') ? OBJECT : ARRAY_A;
 
 		return $wpdb->get_results(
 			$wpdb->prepare($sql, $parameters), $output
 		);
 	}
 
-	public static function find($value = '', $id = 'id')
+	/**
+	 * @param value an string argument, value pk.
+	 * @param pk a string argument primary key, default id.
+	 */
+	public static function find($value = null, $pk = 'id')
 	{
 		if (empty($id) || empty($value)) {
 			return false;
@@ -132,7 +151,7 @@ abstract class Model implements ModelInterface
 		$row = $wpdb->get_row(
 			'SELECT * 
 			FROM '. static::tableName() .' 
-			WHERE '. $id .' = "'. $value .'" 
+			WHERE '. $pk .' = "'. $value .'" 
 			LIMIT 1',
 			ARRAY_A
 		);
@@ -146,6 +165,9 @@ abstract class Model implements ModelInterface
 		return $model;
 	}
 
+	/**
+	 * @param state boolean, true = ok, false = fail.
+	 */
 	protected static function message($state = true)
 	{
 		$message = [];
@@ -161,6 +183,9 @@ abstract class Model implements ModelInterface
 		return $message;
 	}
 
+	/**
+	 * @param ids an array argument.
+	 */
 	public static function deleteIdIn(array $ids)
 	{
 		$idString = implode(',', $ids);

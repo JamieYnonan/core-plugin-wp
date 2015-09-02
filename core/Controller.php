@@ -3,25 +3,38 @@ namespace CorePluginWp;
 
 abstract class Controller
 {
+	/**
+	 * @return boolean
+	 */
 	protected function isPost()
 	{
 		return $_SERVER['REQUEST_METHOD'] === 'POST';
 	}
 
+	/**
+	 * @return boolean
+	 */
 	protected function isGet()
 	{
 		return $_SERVER['REQUEST_METHOD'] === 'GET';
 	}
 
-	protected function post($key = '')
+	/**
+	 * @param key string|int argument, string = key|int = position
+	 * @return false if not exists the key in $_POST
+	 * @return value of key or all $_POST sanitized
+	 */
+	protected function post($key = null)
 	{
-		if(empty($key)) {
+		if($key === null) {
 			$post = filter_var_array($_POST, FILTER_SANITIZE_STRING);
-		} else {
+		} elseif (is_string($key && isset($_POST[$key])) {
 			$value = $_POST[$key];
 			$post = is_array($value)
 				? filter_var_array($value, FILTER_SANITIZE_STRING)
-				: filter_var($value, FILTER_SANITIZE_STRING);;
+				: filter_var($value, FILTER_SANITIZE_STRING);
+		} else {
+			return false;
 		}
 		return $post;
 	}
