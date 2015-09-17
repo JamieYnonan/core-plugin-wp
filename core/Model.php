@@ -1,7 +1,7 @@
 <?php
 namespace CorePluginWp;
 
-use Helper/StringH;
+use Helper\StringH;
 
 abstract class Model implements ModelInterface
 {
