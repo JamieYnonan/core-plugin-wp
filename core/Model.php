@@ -1,6 +1,8 @@
 <?php
 namespace CorePluginWp;
 
+use Helper/StringH;
+
 abstract class Model implements ModelInterface
 {
 	protected static $filter = [
@@ -9,7 +11,7 @@ abstract class Model implements ModelInterface
 	];
 
 	public static function tableName(){
-		return General::camel2id(get_called_class());
+		return StringH::camel2id(get_called_class());
 	}
 
 	/**
