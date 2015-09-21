@@ -52,24 +52,24 @@ abstract class Model implements ModelInterface
 		if (empty($this->id)) {
 			$wpdb->insert(
 				static::tableName(),
-				$dataModel,
-				$formatModel
+				$data['dataModel'],
+				$data['formatModel']
 			);
 			if (!empty($wpdb->insert_id)) {
 				$this->id = $wpdb->insert_id;
 
-				self::loadRowOnModel($this, $dataModel);
+				self::loadRowOnModel($this, $data['dataModel']);
 				return self::message();
 			}
 			return self::message(false);
 		}
 		$wpdb->update(
 			static::tableName(),
-			$dataModel,
+			$data['dataModel'],
 			['id' => $this->id],
-			$formatModel
+			$data['formatModel']
 		);
-		self::loadRowOnModel($this, $dataModel);
+		self::loadRowOnModel($this, $data['dataModel']);
 		return self::message();
 	}
 
@@ -116,9 +116,9 @@ abstract class Model implements ModelInterface
 
 	/**
 	 * @param where an array argument, key = attribute of table, value = value.
-	 * @param output a string argument (object|array), array = ARRAY_A.
+	 * @param outputType a string argument.
 	 */
-	public static function where(array $where, $outputType  = 'object')
+	public static function where(array $where, $outputType  = 'OBJECT')
 	{
 		global $wpdb;
 
@@ -131,29 +131,22 @@ abstract class Model implements ModelInterface
 			$parameters[] = $parameter;
 		}
 
-		$output = ($outputType  == 'object') ? OBJECT : ARRAY_A;
-
 		return $wpdb->get_results(
-			$wpdb->prepare($sql, $parameters), $output
+			$wpdb->prepare($sql, $parameters), $outputType
 		);
 	}
 
 	/**
-	 * @param value an string argument, value pk.
-	 * @param pk a string argument primary key, default id.
+	 * @param id integer.
 	 */
-	public static function find($value = null, $pk = 'id')
+	public static function findOne($id)
 	{
-		if (empty($pk) || empty($value)) {
-			return false;
-		}
-
 		global $wpdb;
 
 		$row = $wpdb->get_row(
 			'SELECT * 
 			FROM '. static::tableName() .' 
-			WHERE '. $pk .' = "'. $value .'" 
+			WHERE id = "'. (int)$id .'"
 			LIMIT 1',
 			ARRAY_A
 		);
