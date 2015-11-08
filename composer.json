@@ -5,7 +5,7 @@
     "type": "library",
     "homepage": "https://github.com/JamieYnonan/core-plugin-wp",
     "require": {
-        "php": ">= 5.4",
+        "php": ">= 5.5",
         "jamieynonan/helpers": "dev-master"
     },
     "license": "GPL-2.0",
