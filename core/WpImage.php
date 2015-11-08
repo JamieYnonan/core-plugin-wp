@@ -35,10 +35,10 @@ class WpImage
 
     public function __construnct($image, $validateMime = null)
     {
-        $this->img = new SplFileInfo($image);
+        $this->img = new \SplFileInfo($image);
         if (!isset(parse_url($image)['scheme'])) {
             if ($this->img->isFile() === false) {
-                throw new Exception('image invalid');
+                throw new \Exception('image invalid');
             }
             $this->isUrl = false;
         } else {
@@ -203,7 +203,7 @@ class WpImage
     {
         if ($mime !== null) {
             if (!in_array($mime, $this->mimes)) {
-                throw new Exception('Mime image invalid');
+                throw new \Exception('Mime image invalid');
             }
             $this->mimeValidate = [$mime];
         } else {
@@ -227,7 +227,7 @@ class WpImage
     {
         $this->setExtensions();
         if (!in_array($this->img->getExtension(), $this->extensions)) {
-            throw new Exception('invalid extension');
+            throw new \Exception('invalid extension');
         }
         $this->setSplFileInfoData();
     }
@@ -244,7 +244,7 @@ class WpImage
     {
         $imageSize = getimagesize($this->originPathName);
         if (!in_array($imageSize['mime'])) {
-            throw new Exception('mimetype invalid');
+            throw new \Exception('mimetype invalid');
         }
         $this->setImageSizeData($imageSize);
     }
@@ -263,7 +263,7 @@ class WpImage
         } else {
             $path = realpath($path);
             if ($path === false) {
-                throw new Exception('Invalid path upload dir');
+                throw new \Exception('Invalid path upload dir');
             }
             $this->uploadDir = $path;
         }
@@ -306,7 +306,7 @@ class WpImage
     {
         $postId = (int)$postId;
         if (!$postId > 0) {
-            throw new Exception('postId invalid');
+            throw new \Exception('postId invalid');
         }
         $this->postId = $postId;
     }
@@ -348,7 +348,7 @@ class WpImage
             $this->postId
         );
         if ($this->attachmentId == 0) {
-            throw new Exception('error insert attachment');
+            throw new \Exception('error insert attachment');
         }
         $this->setAttachmentMetadata();
         if ($thumbnail === true) {
