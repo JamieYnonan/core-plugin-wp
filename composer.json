@@ -4,6 +4,7 @@
     "keywords": ["wordpress","base-plugin-wp","wp"],
     "type": "library",
     "homepage": "https://github.com/JamieYnonan/core-plugin-wp",
+    "minimum-stability": "dev",
     "require": {
         "php": ">= 5.5",
         "jamieynonan/helpers": "dev-master"
