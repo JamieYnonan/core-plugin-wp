@@ -219,7 +219,7 @@ class WpImage
                  $this->extensions = array_merge($this->extensions, $e);
             }
         } else {
-            $this->extension = $this->mimesExtensions[$this->mimeValidate];
+            $this->extensions = $this->mimesExtensions[$this->mimeValidate];
         }
     }
 
