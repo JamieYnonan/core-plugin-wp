@@ -1,7 +1,7 @@
 <?php
 namespace CorePluginWp;
 
-class Image
+class WpImage
 {
     private $mimesExtensions = [
         'image/jpeg' => ['jpg', 'jpeg', 'jpe'],
@@ -274,7 +274,7 @@ class Image
          return wp_mkdir_p($this->uploadDir);
     }
 
-    private function setImgString()
+    private function setImgContent()
     {
         $this->imgContent = file_get_contents($this->originPathName);
     }
@@ -294,7 +294,7 @@ class Image
             $this->setUploadDir(null);
         }
         $this->createDir();
-        $this->setImgString();
+        $this->setImgContent();
         if ($this->name === null) {
             $this->setName();
         }
