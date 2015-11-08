@@ -33,7 +33,7 @@ class WpImage
     protected $postMetaId;
     protected $isThumnail = false;
 
-    public function __construnct($image, $validateMime = null)
+    public function __construct($image, $validateMime = null)
     {
         $this->img = new \SplFileInfo($image);
         if (!isset(parse_url($image)['scheme'])) {
