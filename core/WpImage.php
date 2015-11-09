@@ -304,7 +304,7 @@ class WpImage
         file_put_contents($this->fullPath, $this->imgContent);
     }
 
-    private function setPostId($postIdd)
+    private function setPostId($postId)
     {
         $postId = (int)$postId;
         if (!$postId > 0) {
