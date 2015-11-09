@@ -245,7 +245,7 @@ class WpImage
     private function validateMimeType()
     {
         $imageSize = getimagesize($this->originPathName);
-        if (!in_array($imageSize['mime'], $this->mimeValidate())) {
+        if (!in_array($imageSize['mime'], $this->mimeValidate)) {
             throw new \Exception('mimetype invalid');
         }
         $this->setImageSizeData($imageSize);
