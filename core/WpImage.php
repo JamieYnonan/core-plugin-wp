@@ -284,7 +284,7 @@ class WpImage
     public function setName($imgName = null)
     {
         if ($imgName === null ) {
-            $imgName = str_replace('.'. $this->extension, '', $this->baseName);
+            $imgName = str_replace('.'. $this->extension, '', $this->originBaseName);
         }
         $this->onlyName = sanitize_file_name($imgName);
         $this->name = $this->onlyName . '.'. $this->extension;
@@ -304,7 +304,7 @@ class WpImage
         file_put_contents($this->fullPath, $this->imgContent);
     }
 
-    private function setPostId()
+    private function setPostId($postIdd)
     {
         $postId = (int)$postId;
         if (!$postId > 0) {
