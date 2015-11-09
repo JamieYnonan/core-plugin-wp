@@ -340,7 +340,7 @@ class WpImage
         $title = ($postTitle === null) ? $this->onlyName : $postTitle;
         $attachment = [
             'post_mime_type' => $this->mime,
-            'post_tile' => sanitize_title($title),
+            'post_title' => sanitize_title($title),
             'post_content' => '',
             'post_status' => 'inherit'
         ];
