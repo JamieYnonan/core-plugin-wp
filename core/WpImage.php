@@ -236,7 +236,9 @@ class WpImage
     {
         $this->extension = $this->img->getExtension();
         $this->originBaseName = $this->img->getBasename();
-        $this->size = $this->img->getSize();
+        if ($this->isUrl === false) {
+            $this->size = $this->img->getSize();
+        }
         $this->originPathName = $this->img->getPathname();
     }
 
