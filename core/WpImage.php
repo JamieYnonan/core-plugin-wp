@@ -202,24 +202,24 @@ class WpImage
     private function setMimeValidate($mime)
     {
         if ($mime !== null) {
-            if (!in_array($mime, $this->mimes)) {
+            if (!array_key_exists($mime, $this->mimesExtensions)) {
                 throw new \Exception('Mime image invalid');
             }
             $this->mimeValidate = [$mime];
         } else {
-             $this->mimeValidate = array_keys($this->mimesExtensions);
+            $this->mimeValidate = array_keys($this->mimesExtensions);
         }
     }
 
     private function setExtensions()
     {
-        if ($this->mimeValidate === null) {
-            $extension = array_values($this->mimesExtensions);
-            foreach ($extension as $e) {
+        if (count($this->mimeValidate) > 1) {
+            $extensions = array_values($this->mimesExtensions);
+            foreach ($extensions as $e) {
                  $this->extensions = array_merge($this->extensions, $e);
             }
         } else {
-            $this->extensions = $this->mimesExtensions[$this->mimeValidate];
+            $this->extensions = $this->mimesExtensions[$this->mimeValidate[0]];
         }
     }
 
