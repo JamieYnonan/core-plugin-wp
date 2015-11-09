@@ -207,7 +207,7 @@ class WpImage
             }
             $this->mimeValidate = [$mime];
         } else {
-             $this->mimeValidate = array_keys($mimesExtensions);
+             $this->mimeValidate = array_keys($this->mimesExtensions);
         }
     }
 
