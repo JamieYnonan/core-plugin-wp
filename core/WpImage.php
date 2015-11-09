@@ -328,7 +328,7 @@ class WpImage
 
     private function setPostThumbnail()
     {
-        $thumb = set_post_thumbnail($this->postId, $this->attahcmentId);
+        $thumb = set_post_thumbnail($this->postId, $this->attachmentId);
         if ($thumb != false) {
             $this->isThumbnail = true;
         }
