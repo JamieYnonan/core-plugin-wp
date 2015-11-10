@@ -263,7 +263,7 @@ class WpImage
         if ($pathUploadDir === null) {
             $this->uploadDir = wp_upload_dir()['path'];
         } else {
-            $path = realpath($path);
+            $path = realpath($pathUploadDir);
             if ($path === false) {
                 throw new \Exception('Invalid path upload dir');
             }
@@ -319,11 +319,20 @@ class WpImage
             $this->attachmentId,
             $this->fullPath
         );
+        if ($this->attachmentMetadata === false) {
+            throw new \Exception('faild generate attachment metadata');
+        }
+        if ($this->updateAttachmentMetadata() === false) {
+            throw new \Exception('faild update attachment metadata');
+        }
     }
 
     private function updateAttachmentMetadata()
     {
-        wp_update_attachment_metadata($this->attachmentId, $this->attachmentMetadata);
+        return wp_update_attachment_metadata(
+            $this->attachmentId,
+            $this->attachmentMetadata
+        );
     }
 
     private function setPostThumbnail()
