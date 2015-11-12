@@ -10,7 +10,8 @@ abstract class Model implements ModelInterface
 		'%d' => FILTER_SANITIZE_NUMBER_INT
 	];
 
-	public static function tableName(){
+	public static function tableName()
+    {
 		return StringH::camel2id(get_called_class());
 	}
 
@@ -46,9 +47,7 @@ abstract class Model implements ModelInterface
 		if ($getDataFormat === true) {
 			$data = static::getDataFormat($data);
 		}
-		extract($data);
 
-		$wpdb->show_errors();
 		if (empty($this->id)) {
 			$wpdb->insert(
 				static::tableName(),
@@ -78,8 +77,8 @@ abstract class Model implements ModelInterface
 		global $wpdb;
 
 		$row = $wpdb->get_row(
-			'SELECT * 
-			FROM '. static::tableName() .' 
+			'SELECT *
+			FROM '. static::tableName() .'
 			LIMIT 1',
 			ARRAY_A
 		);
@@ -144,8 +143,8 @@ abstract class Model implements ModelInterface
 		global $wpdb;
 
 		$row = $wpdb->get_row(
-			'SELECT * 
-			FROM '. static::tableName() .' 
+			'SELECT *
+			FROM '. static::tableName() .'
 			WHERE id = "'. (int)$id .'"
 			LIMIT 1',
 			ARRAY_A
@@ -188,8 +187,15 @@ abstract class Model implements ModelInterface
 
 		$num_rows = $wpdb->query(
 			"DELETE FROM ". static::tableName() ."
-			WHERE id IN (". $idString .")" 
+			WHERE id IN (". $idString .")"
 		);
 		return $num_rows > 0;
 	}
+
+    public static function delete($id)
+    {
+        global $wpdb;
+
+		return $wpdb->delete(static::tableName(), ['id' => $id], ['%d']);
+    }
 }
