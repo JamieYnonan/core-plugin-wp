@@ -126,7 +126,12 @@ abstract class Model implements ModelInterface
 
 		$parameters = [];
 		foreach ($where as $attr => $parameter) {
-			$sql .= ' '. $attr .' = '. $attrs[$attr]['format'];
+            $sig = ' = ';
+            if (is_array($parameter)) {
+                $sig = " {$parameter[0]} ";
+                $parameter = $parameter[1];
+            }
+			$sql .= ' '. $attr . $sig . $attrs[$attr]['format'];
 			$parameters[] = $parameter;
 		}
 
