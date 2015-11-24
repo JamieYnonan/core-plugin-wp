@@ -131,6 +131,9 @@ abstract class Model implements ModelInterface
                 $sig = " {$parameter[0]} ";
                 $parameter = $parameter[1];
             }
+            if (count($parameters) > 0) {
+                $sql .= ' AND';
+            }
 			$sql .= ' '. $attr . $sig . $attrs[$attr]['format'];
 			$parameters[] = $parameter;
 		}
