@@ -3,35 +3,18 @@ namespace CorePluginWp;
 
 class View
 {
-	/**
-	 * @param file string argument.
-	 * @param data an array argument.
-	 */
-	public static function render($file, array $data = [])
+    /**
+     * @param $file string if $pluginDir = null, $file must be absolute route + filename and extension, else only filename
+     * @param array $data
+     * @param null $pluginDir
+     * @return string
+     */
+	public static function render($file, array $data = [], $pluginDir = null)
 	{
 		ob_start();
 		extract($data);
-		include __DIR__ . '/../../../../views/'. $file .'.php';
+        $view = ($pluginDir === null) ? $file : $pluginDir . 'views/'. $file .'.php';
+		include $view;
 		return ob_get_clean();
-	}
-
-	/**
-	 * @param file string argument.
-	 * @param data an array argument.
-	 */
-	public static function renderJson($file, array $data = [])
-	{
-		$view = self::render($file, $data);
-		self::json($view);
-	}
-
-	/**
-	 * @param data an array argument.
-	 */
-	public static function json($data)
-	{
-		header('Content-type: application/json');
-		echo json_encode($data);
-		exit;
 	}
 }

@@ -4,11 +4,10 @@
     "keywords": ["wordpress","base-plugin-wp","wp"],
     "type": "library",
     "homepage": "https://github.com/JamieYnonan/core-plugin-wp",
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "require": {
         "php": ">= 5.5",
-        "jamieynonan/helpers": "dev-master",
-        "jamieynonan/wp-image": "dev-master"
+        "jamieynonan/helpers": "1.*"
     },
     "license": "GPL-2.0",
     "authors": [

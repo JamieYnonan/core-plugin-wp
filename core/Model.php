@@ -1,209 +1,199 @@
 <?php
 namespace CorePluginWp;
 
-use Helper\StringH;
+use Helpers\StringH;
 
+/**
+ * Class Model
+ * @package CorePluginWp
+ */
 abstract class Model implements ModelInterface
 {
-	protected static $filter = [
-		'%s' => FILTER_SANITIZE_STRING,
-		'%d' => FILTER_SANITIZE_NUMBER_INT
-	];
+    /**
+     * @var string
+     */
+	protected static $pk = 'id';
 
-	public static function tableName()
+    /**
+     * @var bool
+     */
+    protected $_sanitize = true;
+
+    /**
+     * @var Validator
+     */
+	protected $_validator;
+
+    /**
+     * Model constructor.
+     * @param array|null $data
+     */
+	public function __construct(array $data = null)
+	{
+        if (is_array($data)) {
+            $this->loadData($data, true);
+        }
+	}
+
+    /**
+     * @var array
+     */
+	protected static $format = [
+        'int' => '%d',
+        'float' => '%f',
+        'string' => '%s'
+    ];
+
+    /**
+     * @return string
+     */
+    public static function tableName()
     {
-		return StringH::camel2id(get_called_class());
-	}
-
-	/**
-	 * @param data an array argument, key = attribute of table, value = value.
-	 */
-	public static function getDataFormat(array $data)
-	{
-		global $wpdb;
-
-		$attrs = static::$attributeForm;
-		$return = [];
-		foreach ($attrs as $attr => $formatLabel) {
-			if (isset($data[$attr])) {
-				$return['dataModel'][$attr] = filter_var(
-					$data[$attr],
-					self::$filter[$formatLabel['format']]
-				);
-				$return['formatModel'][] = $formatLabel['format'];
-			}
-		}
-		return $return;
-	}
-
-	/**
-	 * @param data an array argument, key = attribute of table, value = value.
-	 * @param getDataFormat boolean.
-	 */
-	public function save(array $data, $getDataFormat = true)
-	{
-		global $wpdb;
-
-		if ($getDataFormat === true) {
-			$data = static::getDataFormat($data);
-		}
-
-		if (empty($this->id)) {
-			$wpdb->insert(
-				static::tableName(),
-				$data['dataModel'],
-				$data['formatModel']
-			);
-			if (!empty($wpdb->insert_id)) {
-				$this->id = $wpdb->insert_id;
-
-				self::loadRowOnModel($this, $data['dataModel']);
-				return self::message();
-			}
-			return self::message(false);
-		}
-		$wpdb->update(
-			static::tableName(),
-			$data['dataModel'],
-			['id' => $this->id],
-			$data['formatModel']
-		);
-		self::loadRowOnModel($this, $data['dataModel']);
-		return self::message();
-	}
-
-	public static function firstOrModel()
-	{
-		global $wpdb;
-
-		$row = $wpdb->get_row(
-			'SELECT *
-			FROM '. static::tableName() .'
-			LIMIT 1',
-			ARRAY_A
-		);
-
-		$model = new static();
-
-		if($row !== null) {
-			self::loadRowOnModel($model, $row);
-		}
-
-		return $model;
-	}
-
-	/**
-	 * @param model an instance of Model.
-	 * @param row an array argument.
-	 */
-	private static function loadRowOnModel(Model &$model, array $row)
-	{
-		foreach ($row as $attr => $value) {
-			$model->$attr = $value;
-		}
-	}
-
-	public static function all()
-	{
-		global $wpdb;
-
-		return $wpdb->get_results(
-			'SELECT * FROM '. static::tableName(),
-			OBJECT
-		);
-	}
-
-	/**
-	 * @param where an array argument, key = attribute of table, value = value.
-	 * @param outputType a string argument.
-	 */
-	public static function where(array $where, $outputType  = 'OBJECT')
-	{
-		global $wpdb;
-
-		$sql = 'SELECT * FROM '. static::tableName() .' WHERE';
-		$attrs = static::$attributeForm;
-
-		$parameters = [];
-		foreach ($where as $attr => $parameter) {
-            $sig = ' = ';
-            if (is_array($parameter)) {
-                $sig = " {$parameter[0]} ";
-                $parameter = $parameter[1];
-            }
-            if (count($parameters) > 0) {
-                $sql .= ' AND';
-            }
-			$sql .= ' '. $attr . $sig . $attrs[$attr]['format'];
-			$parameters[] = $parameter;
-		}
-
-		return $wpdb->get_results(
-			$wpdb->prepare($sql, $parameters), $outputType
-		);
-	}
-
-	/**
-	 * @param id integer.
-	 */
-	public static function findOne($id)
-	{
-		global $wpdb;
-
-		$row = $wpdb->get_row(
-			'SELECT *
-			FROM '. static::tableName() .'
-			WHERE id = "'. (int)$id .'"
-			LIMIT 1',
-			ARRAY_A
-		);
-
-		if ($row === null) {
-			return null;
-		}
-
-		$model = new static();
-		self::loadRowOnModel($model, $row);
-		return $model;
-	}
-
-	/**
-	 * @param state boolean, true = ok, false = fail.
-	 */
-	protected static function message($state = true)
-	{
-		$message = [];
-		if ($state === true) {
-			$message['text'] = 'Update!';
-			$message['options'] = ['class' => 'bg bg-success'];
-			$message['saved'] = true;
-		} else {
-			$message['text'] = 'Error!';
-			$message['options'] = ['class' => 'bg bg-danger'];
-			$message['saved'] = false;
-		}
-		return $message;
-	}
-
-	/**
-	 * @param ids an array argument.
-	 */
-	public static function deleteIdIn(array $ids)
-	{
-		$idString = implode(',', $ids);
-		global $wpdb;
-
-		$num_rows = $wpdb->query(
-			"DELETE FROM ". static::tableName() ."
-			WHERE id IN (". $idString .")"
-		);
-		return $num_rows > 0;
-	}
-
-    public static function delete($id)
-    {
-        global $wpdb;
-
-		return $wpdb->delete(static::tableName(), ['id' => $id], ['%d']);
+        return $GLOBALS['wpdb']->prefix . StringH::camel2id(get_called_class());
     }
+
+    /**
+     * @return array
+     */
+    public function rules()
+    {
+    	return [];
+    }
+
+    /**
+     * @return bool
+     */
+	public function validate()
+	{
+		$this->_validator = new Validator($this);
+		return $this->_validator->validate();
+	}
+
+    /**
+     * @param null $attr
+     * @return array|mixed|null
+     * @throws \Exception
+     */
+	public function getErrors($attr = null)
+	{
+		if ($this->_validator === null) {
+			throw new \Exception("Error, first call the method validate");
+		}
+		return $this->_validator->getErrors($attr);
+	}
+
+    /**
+     * @param array $data
+     * @param bool $loadPk
+     */
+	public function loadData(array $data, $loadPk = false)
+	{
+		if ($loadPk === true && !empty((int)$data[static::$pk])) {
+			$this->{static::$pk} = (int)$data[static::$pk];
+		}
+		foreach (array_keys($this->rules()) as $attr) {
+			if (isset($data[$attr])) {
+				$this->$attr = $data[$attr];
+			}
+		}
+	}
+
+    /**
+     * @param bool $validate
+     * @return bool
+     */
+	public function save($validate = true)
+	{
+		if ($validate === true) {
+			if ($this->validate() === false) {
+				return false;
+			}
+		}
+		
+		$data = $this->getDataFormat();
+
+		if (empty($this->{static::$pk})) {
+			if ($GLOBALS['wpdb']->insert(
+				static::tableName(),
+				$data['data'],
+				$data['format']) === false
+			) {
+				return false;
+			}
+			$this->{static::$pk} = $GLOBALS['wpdb']->insert_id;
+			return true;
+		}
+
+		$update = $GLOBALS['wpdb']->update(
+			$this->tableName(),
+			$data['data'],
+			[static::$pk => $this->{static::$pk}],
+			$data['format']
+		);
+		return ($update === false) ? false : true;
+	}
+
+    /**
+     * @return mixed
+     * @throws \Exception
+     */
+	public function delete()
+    {
+    	if (empty($this->{static::$pk})) {
+    		throw new \Exception("Error, not exists register");
+    	}
+		return $GLOBALS['wpdb']->delete(
+			static::tableName(),
+			[static::$pk => $this->{static::$pk}],
+			['%d']
+		);
+    }
+
+    /**
+     * @return static
+     */
+    public static function firstOrModel()
+    {
+    	$data = $GLOBALS['wpdb']->get_row(
+    		"SELECT * FROM {static::tableName()} LIMIT 1",
+    		ARRAY_A
+    	);
+
+    	return ($data === null) ? new static() : new static($data);
+    }
+
+    /**
+     * @param int $pk
+     * @return static
+     * @throws \Exception
+     */
+    public static function findOne($pk)
+    {
+    	$data = $GLOBALS['wpdb']->get_row($GLOBALS['wpdb']->prepare(
+    		"SELECT * FROM {static::tableName()} WHERE {static::$pk} = %d LIMIT 1",
+    		$pk
+    	), ARRAY_A);
+
+    	if ($data === null) {
+            throw new \Exception('not exists element '. static::$pk .' = '. $pk);
+    	}
+
+    	return new static($data);
+    }
+
+    /**
+     * @return array
+     */
+    private function getDataFormat()
+    {
+        $return = [];
+        foreach ($this->rules() as $attr => $rules) {
+            $return['data'][$attr] = $this->$attr;
+            $return['format'][] = (isset(self::$format[$rules[0]]))
+            	? self::$format[$rules[0]]
+            	: '%s';
+        }
+        return $return;
+    }
+
 }
