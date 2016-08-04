@@ -1,41 +1,72 @@
 <?php
-namespace CorePluginWp;
+namespace CorePluginWp\db;
 
 /**
  * Class QueryEntity
- * @package CorePluginWp
+ * @package CorePluginWp\db
  */
 abstract class QueryEntity implements QueryEntityInterface
 {
     /**
-     * @return static
+     * @var string enitityClass
      */
-    public static function firstOrModel()
-    {
-        $data = $GLOBALS['wpdb']->get_row(
-            "SELECT * FROM {static::tableName()} LIMIT 1",
-            ARRAY_A
-        );
+    private $entityClass;
 
-        return ($data === null) ? new static() : new static($data);
+    /**
+     * QueryEntity constructor.
+     * @param string $entityClass
+     */
+    public function __construct($entityClass)
+    {
+        $this->entityClass = $entityClass;
+    }
+
+    /**
+     * @return instanceof entityClass
+     */
+    public function firstOrModel()
+    {
+        $data = (new QueryBuilder())
+            ->from($this->entityClass)
+            ->limit(1)
+            ->get();
+
+        return ($data === null) ? new $this->entityClass : new $this->entityClass($data[0]);
     }
 
     /**
      * @param int $pk
-     * @return static
+     * @return instanceof entityClass
      * @throws \Exception
      */
-    public static function findOne($pk)
+    public function one($pk)
     {
-        $data = $GLOBALS['wpdb']->get_row($GLOBALS['wpdb']->prepare(
-            "SELECT * FROM {static::tableName()} WHERE {static::$pk} = %d LIMIT 1",
-            $pk
-        ), ARRAY_A);
+        $data = (new QueryBuilder())
+            ->from($this->entityClass)
+            ->where([($this->entityClass)::$pk, '=', $pk])
+            ->limit(1)
+            ->get();
 
-        if ($data === null) {
-            throw new \Exception('not exists element '. static::$pk .' = '. $pk);
+        if (count($data) != 1) {
+            throw new \Exception('not exists element '. ($this->entityClass)::$pk .' = '. $pk);
         }
 
-        return new static($data);
+        return new $this->entityClass($data[0]);
+    }
+
+    /**
+     * @param null|string $where
+     * @return Collection
+     */
+    public function all($where = null)
+    {
+        $data = (new QueryBuilder())
+            ->from($this->entityClass);
+
+        if ($where !== null) {
+            $data->where($where);
+        }
+
+        return new Collection($data->get(), $this->entityClass);
     }
 }

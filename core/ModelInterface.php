@@ -7,15 +7,9 @@ namespace CorePluginWp;
  */
 interface ModelInterface
 {
-	public static function tableName();
-
 	public function validate();
 
-	public function loadData(array $data);
+	public function loadData(array $data, $loadPk = true);
 
 	public function rules();
-
-	public function save();
-
-	public function delete();
 }

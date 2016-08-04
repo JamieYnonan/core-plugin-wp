@@ -2,7 +2,7 @@
 namespace CorePluginWp\db;
 
 
-class Colection implements \Iterator
+class Collection implements \Iterator
 {
     /**
      * @var array

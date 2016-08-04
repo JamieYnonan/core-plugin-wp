@@ -1,16 +1,16 @@
 <?php
-namespace CorePluginWp;
+namespace CorePluginWp\db;
 
 /**
  * Class QueryBuilder
- * @package CorePluginWp
+ * @package CorePluginWp\db
  */
 class QueryBuilder implements QueryBulderInterface
 {
     /**
      * @var string
      */
-    private $select;
+    private $select = 'SELECT *';
 
     /**
      * @var string
@@ -63,7 +63,7 @@ class QueryBuilder implements QueryBulderInterface
      */
     public function select($params = '*')
     {
-        $this->select = 'SEELCT ' . $params;
+        $this->select = 'SELECT ' . $params;
 
         return $this;
     }
@@ -83,14 +83,16 @@ class QueryBuilder implements QueryBulderInterface
     }
 
     /**
-     * @param array $where example, ['column_name', '=', 'value', '%s']
+     * @param string|array $where example, ['column_name', '=', 'value', '%s']
+     *  examples:
+     *   array: ['column_name', '=', 'value', '%s']
+     *   string: all where (and, or) in one raw where (without initial WHERE)
      * @return $this
      */
-    public function where(array $where)
+    public function where($where)
     {
-
         $this->where .= (empty($this->where)) ? ' WHERE' : ' AND';
-        $this->where .= $this->sanitizeWhere($where);
+        $this->where .= (is_array($where)) ? $this->sanitizeWhere($where) : $where;
 
         return $this;
     }
@@ -185,7 +187,7 @@ class QueryBuilder implements QueryBulderInterface
      * @return mixed
      * @throws \Exception
      */
-    public function get($outputType = OBJECT)
+    public function get($outputType = ARRAY_A)
     {
         $query = $this->sanitizeBlockQuery('select')
             . $this->sanitizeBlockQuery('from')

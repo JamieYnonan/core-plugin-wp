@@ -1,9 +1,9 @@
 <?php
-namespace CorePluginWp;
+namespace CorePluginWp\db;
 
 /**
  * Interface QueryBulderInterface
- * @package CorePluginWp
+ * @package CorePluginWp\db
  */
 interface QueryBulderInterface
 {
@@ -11,7 +11,7 @@ interface QueryBulderInterface
 
     public function from($table);
 
-    public function where(array $where);
+    public function where($where);
 
     public function orWhere(array $where);
 

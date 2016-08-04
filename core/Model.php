@@ -10,11 +10,6 @@ use Helpers\StringH;
 abstract class Model implements ModelInterface
 {
     /**
-     * @var string
-     */
-	protected static $pk = 'id';
-
-    /**
      * @var bool
      */
     protected $_sanitize = true;
@@ -31,26 +26,9 @@ abstract class Model implements ModelInterface
 	public function __construct(array $data = null)
 	{
         if (is_array($data)) {
-            $this->loadData($data, true);
+            $this->loadData($data);
         }
 	}
-
-    /**
-     * @var array
-     */
-	protected static $format = [
-        'int' => '%d',
-        'float' => '%f',
-        'string' => '%s'
-    ];
-
-    /**
-     * @return string
-     */
-    public static function tableName()
-    {
-        return $GLOBALS['wpdb']->prefix . StringH::camel2id(get_called_class());
-    }
 
     /**
      * @return array
@@ -86,7 +64,7 @@ abstract class Model implements ModelInterface
      * @param array $data
      * @param bool $loadPk
      */
-	public function loadData(array $data, $loadPk = false)
+	public function loadData(array $data, $loadPk = true)
 	{
 		if ($loadPk === true && !empty((int)$data[static::$pk])) {
 			$this->{static::$pk} = (int)$data[static::$pk];
@@ -97,103 +75,4 @@ abstract class Model implements ModelInterface
 			}
 		}
 	}
-
-    /**
-     * @param bool $validate
-     * @return bool
-     */
-	public function save($validate = true)
-	{
-		if ($validate === true) {
-			if ($this->validate() === false) {
-				return false;
-			}
-		}
-		
-		$data = $this->getDataFormat();
-
-		if (empty($this->{static::$pk})) {
-			if ($GLOBALS['wpdb']->insert(
-				static::tableName(),
-				$data['data'],
-				$data['format']) === false
-			) {
-				return false;
-			}
-			$this->{static::$pk} = $GLOBALS['wpdb']->insert_id;
-			return true;
-		}
-
-		$update = $GLOBALS['wpdb']->update(
-			$this->tableName(),
-			$data['data'],
-			[static::$pk => $this->{static::$pk}],
-			$data['format']
-		);
-		return ($update === false) ? false : true;
-	}
-
-    /**
-     * @return mixed
-     * @throws \Exception
-     */
-	public function delete()
-    {
-    	if (empty($this->{static::$pk})) {
-    		throw new \Exception("Error, not exists register");
-    	}
-		return $GLOBALS['wpdb']->delete(
-			static::tableName(),
-			[static::$pk => $this->{static::$pk}],
-			['%d']
-		);
-    }
-
-    /**
-     * @return static
-     */
-    public static function firstOrModel()
-    {
-    	$data = $GLOBALS['wpdb']->get_row(
-    		"SELECT * FROM {static::tableName()} LIMIT 1",
-    		ARRAY_A
-    	);
-
-    	return ($data === null) ? new static() : new static($data);
-    }
-
-    /**
-     * @param int $pk
-     * @return static
-     * @throws \Exception
-     */
-    public static function findOne($pk)
-    {
-    	$data = $GLOBALS['wpdb']->get_row($GLOBALS['wpdb']->prepare(
-    		"SELECT * FROM {static::tableName()} WHERE {static::$pk} = %d LIMIT 1",
-    		$pk
-    	), ARRAY_A);
-
-    	if ($data === null) {
-            throw new \Exception('not exists element '. static::$pk .' = '. $pk);
-    	}
-
-    	return new static($data);
-    }
-
-    /**
-     * @return array
-     */
-    private function getDataFormat()
-    {
-        $return = [];
-        foreach ($this->rules() as $attr => $rules) {
-            $return['data'][$attr] = $this->$attr;
-            $return['format'][] = (isset(self::$format[$rules[0]]))
-            	? self::$format[$rules[0]]
-            	: '%s';
-        }
-        return $return;
-    }
-
 }

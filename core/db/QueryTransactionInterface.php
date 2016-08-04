@@ -1,9 +1,9 @@
 <?php
-namespace CorePluginWp;
+namespace CorePluginWp\db;
 
 /**
  * Interface QueryTransactionInterface
- * @package CorePluginWp
+ * @package CorePluginWp\db
  */
 interface QueryTransactionInterface
 {

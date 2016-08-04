@@ -1,9 +1,9 @@
 <?php
-namespace CorePluginWp;
+namespace CorePluginWp\db;
 
 /**
  * Interface EntityInterface
- * @package CorePluginWp
+ * @package CorePluginWp\db
  */
 interface EntityInterface
 {

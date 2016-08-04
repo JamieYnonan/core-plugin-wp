@@ -1,9 +1,9 @@
 <?php
-namespace CorePluginWp;
+namespace CorePluginWp\db;
 
 /**
  * Class QueryTransaction
- * @package CorePluginWp
+ * @package CorePluginWp\db
  */
 class QueryTransaction implements QueryTransactionInterface
 {

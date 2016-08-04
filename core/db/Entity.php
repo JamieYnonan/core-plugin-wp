@@ -1,11 +1,11 @@
 <?php
-namespace CorePluginWp;
+namespace CorePluginWp\db;
 
 /**
  * Class Entity
- * @package CorePluginWp
+ * @package CorePluginWp\db
  */
-abstract class Entity extends Model implements EntityInterface
+abstract class Entity extends \CorePluginWp\Model implements EntityInterface
 {
     /**
      * @var string

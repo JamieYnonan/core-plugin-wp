@@ -1,13 +1,13 @@
 <?php
-namespace CorePluginWp;
+namespace CorePluginWp\db;
 
 /**
- * Interface QueryInterface
- * @package CorePluginWp
+ * Interface QueryEntityInterface
+ * @package CorePluginWp\db
  */
 interface QueryEntityInterface
 {
-    public static function findOne($pk);
+    public function findOne($pk);
 
-    public static function firstOrModel();
+    public function firstOrModel();
 }
